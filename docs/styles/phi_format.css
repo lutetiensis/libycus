@@ -1,0 +1,11 @@
+BODY {
+	font-family: Courier New, Courier;
+	margin: 2em; 
+	color: black;
+	background: white;
+	text-align: justify;
+}
+
+SPAN.idlevel {
+	font-weight: bold;
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>Libycus -- IbyTxtFile</title>
+	<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</head>
+
+<body BACKGROUND="images/eosrp15.gif">
+
+<H1 CLASS="class">IbyTxtFile</H1>
+<H2>Name</H2>
+<H2>Synopsis</H2>
+<H2>Description</H2>
+<H3>Constructors</H3>
+	<P CLASS="method">IbyTxtFile()</P>
+	<P CLASS="method">IbyTxtFile(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; vol)</P>
+<H3>Public Methods</H3>
+	<P CLASS="method">bool Top(const int auth=0, const int work=0, const int sect=0)</P>
+	<P>Moves to the top (beginning) of author, work, or section indicated by the three 0-based indexes. E.g., to go to the beginning of work 2, section 5:
+
+	<PRE CLASS="code">
+	tf->Top(0,1,4)</PRE>
+
+	You are now ready to start reading line from the work with <A HREF="#IbyTxtFileNext">Next()</A> or <A HREF="#IbyTxtFileSearchNext">SearchNext()</A>.</P>
+
+	<A NAME="IbyTxtFileSearchNext"></A>
+	<P CLASS="method">bool SearchNext()</P>
+
+	<A NAME="IbyTxtFileNext"></A>
+	<P CLASS="method">bool Next()</P>
+
+	<P CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Text() const</P>
+	<P>Returns the text of the current line</P>
+	<P CLASS="method">const IbyId &amp; Id() const</P>
+	<P CLASS="method">int Count(const int auth = -1, const int work = -1)</P>
+	<P>Returns the count of authors, works, or sections
+
+	<PRE CLASS="code">
+	int a = tf.Count();    // number of authors in the file
+	int b = tf.Count(0);   // number of works by author 0
+	int c = tf.Count(0,3); // number of sections in work 3 of author 0</PRE>
+	</P>
+	<P CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & Name(const int auth = 0, const int work = -1)</P>
+
+
+</body>
+</html>

@@ -1,0 +1,691 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE> New Document </TITLE>
+<META NAME="Author" CONTENT="Sean Redmond">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="Description of PHI and TLG file formats">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/phi_format.css">
+</HEAD>
+
+<BODY>
+
+<OL>
+	<LI><A HREF="#PHI_CD_ROM_Format">PHI CD ROM Format</A>
+	<OL>
+		<LI><A HREF="#Text_Files">Text Files</A>
+		<LI><A HREF="#ID_Data">ID Data</A>
+		<OL>
+			<LI><A HREF="#Citation_data">Citation data</A>
+			<LI><A HREF="#Descriptive_data">Descriptive data</A>
+			<LI><A HREF="#ID_values">ID values</A>
+			<LI><A HREF="#Decoding">Decoding</A>
+			<OL>
+				<LI><A HREF="#Left_nibble">Left nibble</A>
+				<LI><A HREF="#Right_nibble">Right nibble</A>
+				<LI><A HREF="#Escape_codes">Escape codes</A>
+				<LI><A HREF="#Special_codes">Special codes</A>
+			</OL>
+			<LI><A HREF="#Coding">Coding</A>
+		</OL>
+		<LI><A HREF="#ID_Table_Files">ID Table Files</A>
+		<OL>
+			<LI><A HREF="#Description">Description</A>
+			<LI><A HREF="#Format">Format</A>
+			<OL>
+				<LI><A HREF="#Major_Subdivisions">Major Subdivisions</A>
+				<LI><A HREF="#ID_Fields">ID Fields</A>
+				<LI><A HREF="#Descriptive_Information">Descriptive Information</A>
+				<LI><A HREF="#Miscellaneous">Miscellaneous</A>
+				<LI><A HREF="#Abbreviated_ID_Fields">Abbreviated ID Fields</A>
+			</OL>
+		</OL>
+	</OL>
+</OL>
+
+<P>[page 3]</P>
+
+<A NAME="PHI_CD_ROM_Format"></A>
+<H1>PHI CD ROM Format</H1>
+
+<p>The recent CD ROMs issued by the TLG and PHI follow the
+ISO 9660:1988 (E) standard for volume and directory structure.
+Please note, however, that the internal organization of the
+riles does not conform to the optional &quot;variable length
+record&quot; structure defined in that standard.</p>
+
+<p>You may be able to use a standard software driver to
+locate the files in the directory and read the file data from
+the CD ROM: but your program will need to read the file in
+binary mode and extract the text records from the blocks
+according to the format information presented in this
+document.</p>
+
+<p>Most files on the CD ROM are either text files or ID
+Table files.</p>
+
+<p>Each text file (designated by the filename extension
+.TXT) consists of variable-length text records delimited by
+compressed binary-coded ID citations. The binary ID format is
+described <A HREF="#ID_Data">below on page 5</A>; in summary, each byte of id information has the high-order bit set. The text itself is in 7-bit
+ASCII coded according to the conventions described in the
+document &quot;Beta Coding summary.&quot;</p>
+
+<p>Each ID Table file (designated by the filename extension
+.IDT) is a table of contents to the corresponding text file
+designed to facilitate rapid access to particular sections of
+the text. The ID Table file has a complex structure and come
+applications may choose not to make any use of it. A text file
+is fully usable without any reference to its ID Table file.
+Each ID Table file is guaranteed to be allocated immediately
+before its associated .TXT file to facilitate accessing these
+files by reading consecutive sectors.</p>
+
+<p>The Author List (with the filename AUTHTAB.DIR) contains
+descriptive information for each text file on the disc. The
+purpose of the Author Table is to allow the user to ask for
+the author Plato, for example, without having to know that the
+actual file name is TLG0059. Each entry contains the author
+name, the corresponding file name synonyms, remarks, and
+language. The entries are arranged by category.</p>
+
+<P>[page 4]</P>
+
+<A NAME="Text_Files"></A>
+<H2>Text Files</H2>
+
+<p>A text file usually contains the writings (encoded as necessary) of one or more ancient authors. These all carry a traditional citation system. There are other kinds of text files, though: which may contain (e.g.) bibliographic data or morphologically analyzed text. For consistency, these texts also carry a citation system (usually a simple line increment).</p>
+
+<p>Text files are organized in blocks of 8192 bytes. Each block begins with the full citation for the first record of the block. Subsequent records are preceded by an abbreviated citation. since the ID bytes are all marked with the sign bit set, the citation serves to separate the variable length text records from one another. The end of block is signalled by an end of block marker in an ID field following the last record of the block. End of file is indicated by a marker preceding the end of block marker for the final block. Records do not span blocks.</p>
+
+<p>Processing a block of text is therefore simple. Read in all bytes with the sign bit set. This is the ID or the first record. Call a subroutine to decode the ID data. Now read in all bytes with the sign bit unset. This is the text of the first record. call a subroutine to process the text. Repeat this process for all records in the block, that is, until the ID data contains the end of block marker.</p>
+
+<p>For a description of the text format for Greek texts see
+the document &quot;Beta Coding Summary.&quot;<p>
+
+<P>[page 5]</P>
+
+<A NAME="ID_Data"></A>
+<H2>ID Data</H2>
+<P>The format of the ID data is the same for text (.TXT) and
+ID (.IDT) files. A single subroutine can therefore be written
+to decode the ID information from both file types. The data
+includes both strictly citational information and unstructured
+descriptive material; the two are independent of each other
+and since the descriptive information (where it exists) always
+follows the citation information it may easily be disregarded
+by a simplified decoding subroutine. Included in the data are
+codes specifying the ID level (for citations, <SPAN CLASS="idlevel">a..d</SPAN>,<SPAN CLASS="idlevel">n</SPAN>,<SPAN CLASS="idlevel">v..z</SPAN>; for
+descriptors, <SPAN CLASS="idlevel">a..z</SPAN>) and the ID value. In addition: certain
+control codes (end-of-block, end-of-file) are included among
+the ID bytes.</P>
+
+<A NAME="Citation_data"></A>
+<H3>Citation data</H3>
+
+<P>The ID levels <SPAN CLASS="idlevel">a</SPAN> and <SPAN CLASS="idlevel">b</SPAN> are reserved for the citation of
+the author and work respectively. These levels occur in every
+text. The <SPAN CLASS="idlevel">c</SPAN> level is an optional level specifying the preferred 
+abbreviation for a work (this is used where, as at the TLG
+and PHI, the work is cited by a control number). The <SPAN CLASS="idlevel">d</SPAN> level
+also is optional and specifies the preferred abbreviation for
+an author (for example, at PHI, &quot;Verg&quot; is the <SPAN CLASS="idlevel">d</SPAN> level for
+Vergil). As an example, Vergil's <U>Aeneid</U> will have citations at
+the <SPAN CLASS="idlevel">a</SPAN> through <SPAN CLASS="idlevel">d</SPAN> levels of <SPAN CLASS="idlevel">a</SPAN> = &quot;0690&quot;, <SPAN CLASS="idlevel">b</SPAN> = &quot;003&quot;, <SPAN CLASS="idlevel">c</SPAN> = &quot;A&quot; and
+<SPAN CLASS="idlevel">d</SPAN> = &quot;Verg&quot;. The optional <SPAN CLASS="idlevel">c</SPAN> and <SPAN CLASS="idlevel">d</SPAN> levels are not included in
+the ID Table files. since each work is fully identified by the
+<SPAN CLASS="idlevel">a</SPAN> and <SPAN CLASS="idlevel">b</SPAN> levels.</P>
+
+<P>The lower levels, <SPAN CLASS="idlevel">n</SPAN> and <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">z</SPAN>, are used to cite
+fields within an individual work. For a given work these
+behave according to one of two schemes. In the first (this is
+the only scheme used by the TLG and PHI prior to 1990), the <SPAN CLASS="idlevel">n</SPAN>
+level is not used and levels <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">z</SPAN> are used hierarchically: 
+the field varying most rapidly is always <SPAN CLASS="idlevel">z</SPAN> and denotes
+the line number; the other levels are used only as needed.
+Thus in the New Testament the <SPAN CLASS="idlevel">x</SPAN> level is the chapter, the <SPAN CLASS="idlevel">y</SPAN>
+level is the verse, and the <SPAN CLASS="idlevel">z</SPAN> level is the line. The number of
+levels within a work is constant. This type of citation is
+typically used for literary texts.</P>
+
+<P>In the second scheme, the <SPAN CLASS="idlevel">n</SPAN> level is always present (its
+presence or absence alone indicates which scheme is in effect)
+and is used to specify a &quot;document&quot; within a work. Levels <SPAN CLASS="idlevel">v</SPAN>
+through <SPAN CLASS="idlevel">z</SPAN>, in this scheme, are subordinate to <SPAN CLASS="idlevel">n</SPAN> (that is, when
+n changes <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">z</SPAN> become null) but they are not otherwise
+arranged hierarchically: they change independently of one
+another. The <SPAN CLASS="idlevel">z</SPAN> level is reserved for line number but the other
+levels, <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">y</SPAN> are assigned to whatever fields are
+appropriate to the document at hand. This type of citation
+allows for handling the individual inscriptions or papyri
+within a single volume (work), each of which may have varying
+numbers of ID levels for information such as fragments, sides
+and columns.
+</P>
+
+<P>[page 6]</P>
+
+<A NAME="Descriptive_data"></A>
+<H3>Descriptive data</H3>
+
+<P>The optional descriptor ID levels (<SPAN CLASS="idlevel">a..z</SPAN>) are used
+independently of levels <SPAN CLASS="idlevel">a..d</SPAN>, <SPAN CLASS="idlevel">n</SPAN>, <SPAN CLASS="idlevel">v..z</SPAN> to hold comments or
+descriptive information. They are not part of the citation
+scheme and are not themselves hierarchical. The comment
+contained in a descriptor ID level applies to all the text
+lines that follow until the value of that descriptor level
+changes or a change in the work or document level sets all the
+descriptor levels to null. Their assignment (level <SPAN CLASS="idlevel">l</SPAN>, for
+example, to indicate the location of a papyrus, or <SPAN CLASS="idlevel">d</SPAN> to
+indicate its date) is determined by the data preparer.
+Although there are twenty-six possible descriptor ID levels
+(<SPAN CLASS="idlevel">a..z</SPAN>), PHI has used no more than eight in a single document.
+PHI reserves the <SPAN CLASS="idlevel">z</SPAN> descriptor level as a comment sequence
+number within a work: in the display of continuous text (with
+optimized ID's), it facilitates determining where the data
+preparer intended a comment to appear but has no other
+conventional meaning and is not part of the original comment.
+These descriptors are not included in ID Table files.</P>
+
+<A NAME="ID_values"></A>
+<H3>ID values</H3>
+
+<P>ID values are divided into binary and ASCII components.
+Leading digits: if any: are converted into a binary value) any
+trailing characters become the ASCII component. Thus, the
+citation &quot;12&quot; has a binary value of 12 and no ASCII value. The
+citation &quot;l2a&quot; also has a binary value of 12 but an ASCII
+value of &quot;a&quot;. The citation &quot;a12&quot; has no binary value and and
+ASCII value of &quot;al2&quot;.</P>
+
+<P>The ASCII component presently can have a total length
+from 1 to 15 characters (citations) or l to 31 characters
+(descriptors) as used on the CD ROMs being described; these
+values may change in future releases.</P>
+
+<A NAME="id_comparison"></A>
+<P>When citations are compared, the binary value is compared
+first. If the binary values match, the ASCII values are
+converted to lower case and compared character by character,
+but runs of digits within the ASCII string are evaluated as
+numbers. Thus the citation &quot;3a&quot; is less than the citation
+&quot;l2a&quot; (since binary 3 is less than binary 12) and citation
+&quot;a3&quot; is less than the citation &quot;a12&quot; (even though ASCII 3 is
+greater than ASCII 1): &quot;3B&quot; is greater than &quot;3a&quot; and &quot;t&quot; is
+less than &quot;1&quot; By the same rules, &quot;A3l&quot; is less than both
+&quot;A3OO&quot; and &quot;AB&quot; since 31 comes before 300 (numeric) and &quot;A&quot;
+comes before &quot;AB&quot; (string).</P>
+
+<P>Numbers can range from 1 to 16383; larger numbers are
+treated (and sorted) as strings. .</P>
+
+<P>An ID level is explicitly set to null if it consists of
+a null string, coded with no binary value followed by a string
+of length zero.</P>
+
+<P>[page 7]</P>
+
+<A NAME="Decoding"></A>
+<H3>Decoding</H3>
+<P>An ID byte may be distinguished from a text byte by the
+high bit (the sign bit) of the byte. Since the text encoding
+system is based on 7-bit ASCII characters, the sign bit is
+always clear for text bytes; the sign bit is always set for ID
+bytes. This distinction makes it easy to separate ID
+information from text information as the data is processed.</P>
+
+<P>The first byte of an ID sequence is always a code byte.
+The code byte is followed by data bytes, as required.
+Additional code bytes vith their data bytes may follow.
+Descriptor code and value bytes, where they exist, always
+follow citation bytes.</P>
+
+<P>In order to process a code byte the left and right hand
+nibbles must be isolated. The left nibble will usually contain
+the level code and the right nibble will contain information
+about the ID value for that level. When processing any attendant 
+data bytes, the sign bit must first be stripped. For
+ASCII datae one need only clear the sign bit. For binary data,
+though it ia necessary to consider the value exclusive of the
+sign bit. Thus a two-byte binary value contains only 14 bits
+of information (the lowest seven bits of each byte).</P>
+
+<A NAME="Left_nibble"></A>
+<H4>Left nibble</H4>
+<P>Since the sign bit is always set, there are eight
+possible values for the left nibble.</P>
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+    <TD>1000</TD>
+    <TD><SPAN CLASS="idlevel">z</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1001</TD>
+    <TD><SPAN CLASS="idlevel">y</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1010</TD>
+    <TD><SPAN CLASS="idlevel">x</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1011</TD>
+    <TD><SPAN CLASS="idlevel">w</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1100</TD>
+    <TD><SPAN CLASS="idlevel">v</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1101</TD>
+    <TD><SPAN CLASS="idlevel">n</SPAN>-level ID</TD>
+</TR>
+<TR>
+    <TD>1110</TD>
+    <TD><A HREF="#Escape_codes">Escape code</A>: ID level will be found in next ID byte</TD>
+</TR>
+<TR>
+    <TD>1111</TD>
+    <TD><A HREF="#Special_codes">Special code (not an ID): see below</A></TD>
+</TR>
+</TABLE>
+
+<A NAME="Right_nibble"></A>
+<H4>Right nibble</H4>
+
+<P>The right nibble has sixteen possible values. since low
+binary values are the most common ID values, 1-7 are reserved
+as literal values. The ID can therefore be expressed as a
+single byte in many cases.</P>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+    <TD>0000</TD>
+    <TD>increment the ID at this level</TD>
+</TR>
+<TR>
+    <TD>0001-0111</TD>
+    <TD>literal binary ID values</TD>
+</TR>
+<TR>
+    <TD>1000</TD>
+    <TD>7-bit binary value</TD>
+</TR>
+<TR>
+    <TD>1001</TD>
+    <TD>7-bit binary value + single ASCII character</TD>
+</TR>
+<TR>
+    <TD>1010</TD>
+    <TD>7-bit binary value + ASCII string</TD>
+</TR>
+<TR>
+    <TD>1011</TD>
+    <TD>l4-bit binary value</TD>
+</TR>
+<TR>
+    <TD>1100</TD>
+    <TD>l4-bit binary value + single ASCII character</TD>
+</TR>
+<TR><TD COLSPAN="2">[page 8]</TD></TR>
+<TR>
+    <TD>1101</TD>
+    <TD>14-bit binary value + ASCII string</TD>
+</TR>
+<TR>
+    <TD>1110</TD>
+    <TD>same binary value + new single ASCII character</TD>
+</TR>
+<TR>
+    <TD>1111</TD>
+    <TD>no binary value + ASCII string</TD>
+</TR>
+<TR>
+    <TD></TD>
+    <TD></TD>
+</TR>
+</TABLE>
+
+<A NAME="Escape_codes"></A>
+<H4>Escape codes</H4>
+
+<P>When the left nibble is binary ll10, the right nibble
+contains information on the ID value, as above. The level code
+is, however, contained in the next byte. This level code
+occupies the full byte (disregarding the sign bit) and should
+be processed immediately, as it will intervene between the
+right nibble code and any data bytes which follow.</P>
+
+<P>The values defined by the escape code usually describe
+high level citation ID fields (ie, author, work) or descriptor
+ID's. The level code contained in the next byte has for
+citation ID's the possible values: <SPAN CLASS="idlevel">a</SPAN>=0, <SPAN CLASS="idlevel">b</SPAN>=1, <SPAN CLASS="idlevel">c</SPAN>=2, and <SPAN CLASS="d">d</SPAN>=4; for
+descriptor ID's: <SPAN CLASS="idlevel">a</SPAN>=97, <SPAN CLASS="idlevel">b</SPAN>=98, <SPAN CLASS="idlevel">c</SPAN>=99, ... , <SPAN CLASS="idlevel">z</SPAN>=l22 . Descriptor
+ID's thus always begin with an escape code (left nibble is
+binary 1110) and always have a level code (sign bit
+disregarded) greater than 96.</P>
+
+<A NAME="Special_codes"></A>
+<H4>Special codes</H4>
+
+<P>When the left nibble is an all ones value (1111) . the
+right nibble def ices a special code usually a delimiter.</P>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+	<TD>1111 1111</TD>
+	<TD>end-of-ASCII-string</TD>
+</TR>
+<TR>
+	<TD>1111 1110</TD>
+	<TD>end-of-block</TD>
+</TR>
+<TR>
+	<TD>1111 0000</TD>
+	<TD>end-of-file</TD>
+</TR>
+<TR>
+	<TD>1111 1000</TD>
+	<TD>exception start</TD>
+</TR>
+<TR>
+	<TD>1111 1001</TD>
+	<TD>exception end</TD>
+</TR>
+</TABLE>
+
+<P>The end-of-block code is the last valid data byte in
+every block; the rest of the block is padded with nulls. The
+end-of-file code is the next-to-the-last data byte in the last
+block of every file: it is followed by an end-of-block code
+and null padding.</P>
+
+<P>Exception-start and exception-ènd are included optionally
+to delimit text lines that appear out-of-order (when evaluated
+by the <A HREF="#id_comparison">comparison technique described above</A>). These codes are
+never needed to determine the current ID and may be ignored;
+they are intended only to serve as hints in browsing through a
+text rearranged from its traditional order by a modern editor.
+Abbreviated ID Fields</P>
+
+<P>In ID files, the full ID is given for each author ID
+(level <SPAN CLASS="idlevel">a</SPAN> only), each work ID (level <SPAN CLASS="idlevel">b</SPAN> only) and each new
+section (levels <SPAN CLASS="idlevel">n</SPAN> and <SPAN CLASS="idlevel">v-z</SPAN>); descriptor ID levels are not
+included in ID files. In text vilest the full ID (a11 levels:
+citation and descriptor) is given at the beginning of each 8K
+block. Other ID fields usually contain only enough information
+to show how the current ID field differs from the last. Thus,
+
+[page 9]
+
+most lines in a text require only the code for &quot;increment the z level&quot; (binary 1000 0000). When the higher levels do not change, they need not be cited. When a higher level does change and levels <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">z</SPAN> are hierarchical (that is, no <SPAN CLASS="idlevel">n</SPAN> level is present), all lower levels are implicitly set to binary 1. This often obviates the need to cite the lower levels explicitly. Thus, to mark line 1 of Chapter 2 in a (hierarchical) work, the required citation would be &quot;increment the <SPAN CLASS="idlevel">y</SPAN> level&quot; (binary 1001 0000) since the <SPAN CLASS="idlevel">y</SPAN> level was previously set for Chapter 1 and the <SPAN CLASS="idlevel">z</SPAN> level is set to 1 implicitly. Note that when the author or work changes, all lower levels are set to null.</P>
+
+<P>When levels <SPAN CLASS="idlevel">v</SPAN> through <SPAN CLASS="idlevel">z</SPAN> are not hierarchical (that is, in
+documents, where the <SPAN CLASS="idlevel">n</SPAN> level is present), a change in author,
+work or document <SPAN CLASS="idlevel">n</SPAN>-level) sets all lower levels to null.
+Otherwise the lower levels are set explicitly.</P>
+
+<P>Level descriptions (e.g., <SPAN CLASS="idlevel">x</SPAN>=&quot;book&quot;, <SPAN CLASS="idlevel">y</SPAN>=&quot;chapter&quot;) in the
+ID table are handled in a similar fashion. The full
+description is always given for the author level. the work
+level and for the lower levels of the first work. Lower level
+descriptions for subsequent works may be omitted if
+unnecessary. Thus, if thirty consecutive works are cited by
+Book/line, the table need only give this information for the
+first instance only.</P>
+
+<A NAME="Coding"></A>
+<H3>Coding</H3>
+
+<P>On PHI CD R0Ms, ASCII information in the citations is
+treated literalty and the Beta code conventions used in text
+data are not applicable. Beta code conventions <B>are</B> used to
+ASCII text in descriptor ids (those with level codes 96, 97,
+98, ..., 122) and in the level descriptions.</P>
+
+<P>[page 10]</P>
+
+<A NAME="ID_Table_Files"></A>
+<H2>ID Table Files</H2>
+<A NAME="Description"></A>
+<H3>Description</H3>
+<P>For each text file, the corresponding ID table file
+provides a detailed account of the identity and location of
+the authors and works for that file, the location of all major
+sections within the works, and a complete listing of the
+ending citation for each text block within a section. In the
+case of documents, information is given to the document (<SPAN CLASS="idlevel">n</SPAN>)
+level only for the end of each text block and information
+about lower levels is not included. If the document id is the
+same at the end of consecutive blocks, the first block is
+marked with the document id: and the later ones have the new
+block code without any additional information.</P>
+
+<P>For example, the ID table for file TLG00l2.TXT would tell
+us that the first author is named &quot;Homer&quot; and that the author
+is cited &quot;0012&quot; that the first work is named &quot;Iliad&quot; and is
+cited &quot;001&quot; and that the first major section of this work is
+is Book 1. The block location for each of these is given, and
+the section data is followed by a list of the ending citations
+for each block in Book 1. The data for Book l will be followed
+by that for Book 2, and so forth until the second work is
+encountered.</P>
+
+<P>Note that each subdivision is nested, that is, the text
+for an author is divided into one or more works, the text for
+a work is divided into one or more sectional and the text for
+a section is divided into one or more blocks. A block may
+contain parts of two or more sections or works; work and
+section boundaries do not have to coincide with block
+boundaries. The works and sections are presented in the ID
+Table file in the same order as they are found in the text;
+they are not sorted.</P>
+
+<P>Because an editor will at times reorder a text but leave
+the traditional citation intact, the ID table makes provision
+for out-of-sequence lines. If an editor places a line numbered
+912 between lines 310 and 311, this will usually produce an
+exception field. An exception field lists the beginning and
+ending citation for lines which do not fall in the expected
+block. Note that if an editor positions line 314 between lines
+310 and 311, this will not usually produce an exception. The
+reason for this is that line 314 is very likely in the
+expected block, despite the fact that it is out of order
+within the block. Thus. to find line 912 in the example above,
+you would locate the block in the usual fashion. Immediately
+before the block which contains, say, lines 885-940, the
+exception would be listed along with the true block location
+for the line.</P>
+
+<P>[page 11]</P>
+
+<A NAME="Format"></A>
+<H3>Format</H3>
+<P>Each entry in the ID table is introduced by a type code
+byte from zero to thirty-one (decimal). Each type of entry has
+its own form and function. The entry may introduce a major
+section, provide descriptive information for a section, or
+give the ID ranges for a section or block. The form of the
+entries is detailed below. Note that there is no length field
+for entries which contain ID data. Since the ID data is always
+the last field in the entry, and since ID bytes always have
+the sign bit set the end of the entry can be found by reading
+the ID bytes until a byte is encountered with the sign bit
+clear.</P>
+
+<A NAME="Major_Subdivisions"></A>
+<H4>Major Subdivisions</H4>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+    <TD VALIGN="top">0</TD>
+    <TD>End of file</TD>
+</TR>
+<TR>
+    <TD VALIGN="top">1</TD>
+    <TD>New author. Followed by a 2-byte length which is the
+length of the author section (including all nested
+works). The count includes the length field itself. The
+length is followed by the 2-byte block number. The block
+number is the 8K block in which the author begins. The
+block number is followed by the author ID.</TD>
+</TR>
+<TR>
+    <TD VALIGN="top">2</TD>
+    <TD>New work. Followed by a 2-byte length which is the length
+of the work section (including all nested subsections).
+The count includes the length field itself. The length is
+followed by the 2-byte block number. The block number is
+the 8K block in which the work begins. The block number
+is followed by the work ID.</TD>
+</TR>
+<TR>
+    <TD VALIGN="top">3</TD>
+    <TD>New section. This marks the next section within the work.
+Followed by a 2-byte block number. The block number is
+the 8K block in which the section begins.</TD>
+</TR>
+<TR>
+    <TD VALIGN="top" NOWRAP>4-6</TD>
+    <TD>Undefined</TD>
+</TR>
+<TR>
+    <TD VALIGN="top">7</TD>
+    <TD>New file (obsolete). This marks the start of a new file in
+the combined ID table (also obsolete). Followed by a
+2-byte length which is the length of the ID material for
+this file. The count includes the length field itself.
+The length is followed by the 4-byte absolute address and
+the 2-byte length of the text file (expressed in 8K
+blocks).</TD>
+</TR>
+</TABLE>
+
+<A NAME="ID_Fields"></A>
+<H4>ID Fields</H4>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+	<TD VALIGN="top">8</TD>
+	<TD>Beginning ID for new section. This is the first entry
+following the new subsection marker (type 3).</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">9</TD>
+	<TD>Ending ID for new section. This if the last ID entry for
+the subsection (unless followed by an exception).</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">10</TD>
+	<TD>Last valid ID for the current block. One of these occurs
+for each block.</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">11</TD>
+	<TD>Start exception. This introduces an out-of-sequence ID
+(i.e. one which does not belong in the current block). The 2-byte block number precedes the ID.</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">12</TD>
+	<TD>End exception. This gives the end range for the ID
+exception whose starting range and block number is given
+by type 11.</TD>
+</TR>
+<TR>
+	<TD COLSPAN="2">[page 12]</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">13</TD>
+	<TD>Single exception: A single out-of-sequence id.</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">14</TD>
+	<TD>Undefined.</TD>
+</TR>
+</TABLE>
+
+<A NAME="Descriptive_Information"></A>
+<H4>Descriptive Information</H4>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+	<TD VALIGN="top">16</TD>
+	<TD>Description of ID fields <SPAN CLASS="idlevel">a..b</SPAN>.. Followed by a l-byte
+identifier (<SPAN CLASS="idlevel">a..b</SPAN>=0..l) and a l-byte length. The length
+pertains to the description only and does not include the
+type type, type identifier, or length byte. The description 
+is usually the author or work name. Given at the
+author or work level, as appropriate. These fields
+typically indicate the full name of the author and of the
+works by that author; they should not be confused with
+the abbreviated forms in the <SPAN CLASS="idlevel">d</SPAN> and <SPAN CLASS="idlevel">c</SPAN> fields in the actual
+citations in the texts.</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">17</TD>
+	<TD>Description of ID fields <SPAN CLASS="idlevel">n</SPAN>, <SPAN CLASS="idlevel">v..z</SPAN>. Followed by a l-byte
+field identifier. For documents, the <SPAN CLASS="idlevel">n</SPAN>-level identifier
+= 0, and no other levels are described. For <SPAN CLASS="idlevel">v..z</SPAN> levels,
+the identifier is 4..0. The identifier is followed by a
+l-byte length. The length pertains to the description
+only and does not include the type type, type identifier,
+or length byte. Given at the work level. These indicated
+e.g., that the <SPAN CLASS="idlevel">y</SPAN> level refers to a book of the <U>Aeneid</U>
+and the <SPAN CLASS="idlevel">z</SPAN> level to a line within that book.</TD>
+</TR>
+</TABLE>
+
+<P>Text in the descriptive fields is assumed to be coded
+according to the conventions described the document &quot;Beta
+Coding Summary.&quot;</P>
+
+<A NAME="Miscellaneous"></A>
+<H4>Miscellaneous</H4>
+
+<TABLE CELLSPACING="2" CELLPADDING="2" BORDER="0">
+<TR>
+	<TD VALIGN="top" NOWRAP>18-30</TD>
+	<TD>Undefined</TD>
+</TR>
+<TR>
+	<TD VALIGN="top">31</TD>
+	<TD>Introduces header of combined ID table. Followed by 3
+length bytes, which give the total length in bytes of the
+combined table. The count includes b0th the type code
+byte and the length bytes.</TD>
+</TR>
+</TABLE>
+
+<A NAME="Abbreviated_ID_Fields"></A>
+<H4>Abbreviated ID Fields</H4>
+
+<P>In ID files, the full ID is given for each author ID
+(level <SPAN CLASS="idlevel">a</SPAN> only), each work ID (level <SPAN CLASS="idlevel">a</SPAN> only) and each new
+section (levels <SPAN CLASS="idlevel">v..z</SPAN>). In text files the full ID (al1 levels)
+is given at the beginning of each 8K block. Other ID fields
+usually contain only enough information to show how the
+current ID field differs from the last. Thus most lines in a
+text require only the code for &quot;increment the <SPAN CLASS="idlevel">z</SPAN>-level&quot; (binary
+1000 0000). When the higher levels do not change, they need
+not be cited. When a higher level does change, all lower
+levels are implicitly set to binary 1. This often obviates the
+need to cite the lower levels explicitly. Thus, to cite line 1
+of chapter 2 in a work, the required citation would be
+&quot;increment the <SPAN CLASS="idlevel">y</SPAN>-level&quot; (binary 1001 0000) since the <SPAN CLASS="idlevel">y</SPAN>-level
+was previously set for Chapter l and the <SPAN CLASS="idlevel">z</SPAN>-level is set to 1
+
+[page 13]
+
+implicitly. Note that when the author, work or or document
+changes, all lower levels are set to null.</P>
+
+<P>Descriptions in the ID table are handled in a similar
+fashion. The full description is always given for the author
+level, the work level, and for the lower levels of the first
+work. Lower level descriptions for subsequent works are given
+only as needed. Thus, if thirty consecutive works are cited by
+Book/line, the table will give this information for the first
+instance only.</P>
+
+
+</BODY>
+</HTML>

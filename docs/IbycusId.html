@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<TITLE>Libycus -- IbycusId</TITLE>
+<META NAME="Author" CONTENT="Sean Redmond">
+<META NAME="Keywords" CONTENT="">
+<META NAME="Description" CONTENT="">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</HEAD>
+
+<body BGCOLOR="#FFF5EE">
+
+<H1>IbycusId</H1>
+
+<H2>Description</H2>
+
+<HR>
+<DIV class="methodindex">
+<H2>Constructors</H2>
+<P CLASS="methodindex"><A HREF="#IbycusId()">IbycusId()</A></P>
+
+<P CLASS="methodindex"><A HREF="#IbycusId(IbycusId)">IbycusId</A>(const IbycusId &amp; rhs)</P>
+
+<P CLASS="methodindex"><A HREF="#IbycusId(IbycusId,ibyIdNumber)">IbycusId</A>(const IbycusId &amp; rhs, const ibyIdNumber &amp; cit1, <BR>const ibyIdNumber &amp; cit2=ibyIdNumber(),	<BR>const ibyIdNumber &amp; cit3=ibyIdNumber(), <BR>const ibyIdNumber &amp; cit4=ibyIdNumber(), <BR>const ibyIdNumber &amp; cit5=ibyIdNumber())</P>
+
+<P CLASS="methodindex"><A HREF="#IbycusId(ibyFile)">IbycusId</A>(ibyFile &amp src)</P>
+
+<P CLASS="methodindex"><A HREF="#IbycusId(ibyFile,IbycusId)">IbycusId</A>(ibyFile &amp; src, const IbycusId & prev)</P>
+
+<H2>Public Methods</H2>
+<P CLASS="methodindex">bool IsTitle() const</P>
+</DIV>
+
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Constructors</H2>
+
+<A NAME="IbycusId()"></A>
+<H3>IbycusId()</H3>
+<P>Default constructor. Constructs an empty <SPAN CLASS="classname">IbycusId</SPAN></P>
+
+<A NAME="IbycusId(IbycusId)"></A>
+<H3>IbycusId(const IbycusId &amp; rhs)</H3>
+
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">rhs</SPAN></TD>
+	<TD>An IbycusId on which to base the new one</TD>
+</TR>
+</TABLE>
+<P>Copy constructor. Creates a copy of <SPAN CLASS="variable">rhs</SPAN>.</P>
+
+<A NAME="IbycusId(IbycusId,ibyIdNumber)"></A>
+<H3>IbycusId(const IbycusId &amp; rhs, const ibyIdNumber &amp; cit1, <BR>const ibyIdNumber &amp; cit2=ibyIdNumber(),	<BR>const ibyIdNumber &amp; cit3=ibyIdNumber(), <BR>const ibyIdNumber &amp; cit4=ibyIdNumber(), <BR>const ibyIdNumber &amp; cit5=ibyIdNumber())</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">rhs</SPAN></TD>
+	<TD>An IbycusId on which to base the new one</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">cit1</SPAN></TD>
+	<TD>An ibyIdNumber to store (required).</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">cit2</SPAN></TD>
+	<TD>An ibyIdNumber to store (optional).</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">cit3</SPAN></TD>
+	<TD>An ibyIdNumber to store (optional).</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">cit4</SPAN></TD>
+	<TD>An ibyIdNumber to store (optional).</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">cit5</SPAN></TD>
+	<TD>An ibyIdNumber to store (optional).</TD>
+</TR>
+</TABLE>
+
+<P>This constructor first creates a copy of <SPAN CLASS="variable">rhs</SPAN>, then overwrites the ID levels from <SPAN CLASS="variable">cit1</SPAN> to <SPAN CLASS="variable">cit5</SPAN> starting from the &quot;right-hand side&quot;, that is, the lowest (z) level first. The following code:</P>
+
+<PRE CLASS="code">
+// Open up Vergil (your directory may be different)
+IbycusTxtFile txt("LAT0960", "D:\");
+txt.Start(0,2) // Go to the start of the Aeneid
+IbycusId a = txt.Id();
+cout &lt;&lt; a &lt;&lt; &quot;\n&quot;
+
+IbycusId b(old) // Simple copy constructor
+cout &lt;&lt; b &lt;&lt; &quot;\n&quot;
+
+IbycusId c(b, IbycusIdNumber(2)) // Make the lowest level 2
+cout &lt;&lt; c &lt;&lt; &quot;\n&quot;
+
+// Make the lowest level (line) 100 and the next lowest level (book) 2
+IbycusId d(c, IbycusIdNumber(2), IbycusIdNumber(100))
+cout &lt;&lt; d &lt;&lt; &quot;\n&quot;
+</PRE>
+
+<P>Produces the following output:</P>
+
+<PRE CLASS="output">
+0960.003.1.1
+0960.003.1.1
+0960.003.1.2
+0960.003.2.100
+</PRE>
+
+<P>These are equivalent ways of constructing an ID to use with <A HREF="IbycusTxtFile.html#Goto(IbycusId)">IbycusTxtFile::Goto()</A></P>
+
+<PRE CLASS="code">
+// Open up Vergil (your directory may be different)
+IbycusTxtFile txt("LAT0960", "D:\");
+IbycusId id;
+
+// Goto Eclogues 1.23
+// using only temporaries
+txt.Goto(IbycusId(txt.Start(), IbycusIdNumber(23)));
+
+// Goto Georgics 2.34
+// Create an id locally and use it to create a temporary
+id = txt.Start(0,1,1);
+txt.Goto(IbycusId(id, IbycusIdNumber(34)));
+
+// Goto Aeneid 3.456
+// Create an id locally and pass it to Goto()
+id = IbycusId(txt.Start(0,2,2), IbycusIdNumber(456));
+txt.Goto(id);
+
+</PRE>
+
+<A NAME="IbycusId(ibyFile)"></A>
+<H3>IbycusId(ibyFile &amp src)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">src</SPAN></TD>
+	<TD>File from which to read the IbycusId.</TD>
+</TR>
+</TABLE>
+<P>Reads an IbycusId from <SPAN CLASS="variable">src</SPAN>.</P>
+
+<A NAME="IbycusId(ibyFile,IbycusId)"></A>
+<H3>IbycusId(ibyFile &amp; src, const IbycusId & prev)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">rhs</SPAN></TD>
+	<TD>An IbycusId on which to base the new one</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">src</SPAN></TD>
+	<TD>File from which to read the IbycusId.</TD>
+</TR>
+</TABLE>
+<P>Copies IbycusId from <SPAN CLASS="variable">rhs</SPAN> and then reads new data from <SPAN CLASS="variable">src</SPAN>.</P>
+
+</DIV>
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Public Methods</H2>
+
+<H3>bool IsTitle() const</H3>
+<P>Returns true if the ID represents a title, i.e., if any of its levels is &quot;t&quot;.</P>
+
+</DIV>
+
+<HR>
+<P>
+<A HREF="Libycus.html">Introduction</A> | 
+<A HREF="http://libycus.sourceforge.net">Libycus Homepage</A>
+</P>
+
+<ADDRESS><A HREF="mailto:seanredmond@users.sourceforge.net">Sean Redmond</A></ADDRESS>
+
+</BODY>
+</HTML>

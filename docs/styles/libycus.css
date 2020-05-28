@@ -1,0 +1,69 @@
+BODY {
+	font-family: Verdana, Arial, Sans serif;
+	margin: 2em; 
+	color: black;
+	text-align: justify;
+}
+
+A, A:visited {
+	color: blue;
+	text-decoration: none;
+}
+
+DIV.methodindex {
+	margin-left: 2em;
+}
+
+DIV.methodindex  H2 {
+	margin-left: -1.5em;
+}
+
+DIV.methodindex H3 {
+	font-family: Courier New, Courier;
+	font-weight: bold;
+	font-size: 120%;
+	text-indent: -2em;
+}
+
+DIV.methodindex H4 {
+	margin-bottom: 1em;
+}
+
+PRE.code {
+	background: white;
+	border: 1px solid black;
+	padding: 1em;
+}
+
+PRE.output {
+	background: black;
+	color: lime;
+	border: 5px ridge silver;
+	padding: 1em;
+}
+
+SPAN.classname {
+	font-family: Courier New, Courier;
+	font-weight: bold;
+}
+
+SPAN.variable, SPAN.literal, P.methodindex {
+	font-family: Courier New, Courier;
+}
+
+SPAN.code {
+	font-family: Courier New, Courier;
+	font-weight: bold;
+}
+
+SPAN.filename, SPAN.variable, SPAN.method {
+	font-family: Courier New, Courier;
+}
+
+DIV.method {
+	margin-left: 3em;
+}
+
+TD.param {
+	font-weight: bold;
+}

@@ -1,0 +1,251 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Libycus -- IbycusIdtFile</TITLE>
+<META NAME="Author" CONTENT="seanredmond@users.sourceforge.net">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</HEAD>
+
+<body BGCOLOR="#FFF5EE">
+<H1>IbycusIdtFile</H1>
+<HR>
+<H2>Description</H2>
+
+<P>The <SPAN CLASS="classname">IbycusIdtFile</SPAN> class provides an interface to PHI\TLG <SPAN CLASS="filename">.IDT</SPAN> files which are indexes to their corresponding <SPAN CLASS="filename">.TXT</SPAN> files. Like an <SPAN CLASS="classname"><A HREF="IbycusTxtFile.html">IbycusTxtFile</A></SPAN>, each file contains 1 (or possibly more) authors, with 1 or more works divided into 1 or more sections. Each of these may be accessed by index number, which are 0-based. The first section of the first work of the first author is therefore at index 0, 0, 0.</P>
+
+<P>When you create an <SPAN CLASS="classname"><A HREF="IbycusTxtFile.html">IbycusTxtFile</A></SPAN> it creates its own <SPAN CLASS="classname">IbycusIdtFile</SPAN>, and most of the methods of <SPAN CLASS="classname">IbycusIdtFile</SPAN> can be accessed through equivalent <SPAN CLASS="classname"><A HREF="IbycusTxtFile.html">IbycusTxtFile</A></SPAN> methods.
+
+<HR>
+<DIV class="methodindex">
+<H2>Constructors</H2>
+
+<P CLASS="methodindex">IbycusIdtFile()</P>
+<P CLASS="methodindex">IbycusIdtFile(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & vol)</P>
+
+<H2>Public Methods</H2>
+
+<P CLASS="methodindex">void Open(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & vol)</P>
+<P CLASS="methodindex">int Count(const int auth = -1, const int work = -1)</P>
+<P CLASS="methodindex">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & Name(const int auth = 0, const int work = -1)</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> & Id(const int auth = 0, const int work = -1, const int sect = -1)</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> & Start(const int auth = 0, const int work = 0, const int sect = 0)</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> & End(const int auth = 0, const int work = -1, const int sect = -1)</P>
+<P CLASS="methodindex">ibylen_t Block(const int auth = 0, const int work = 0, const int sect = 0, const <A HREF="IbycusId.html">IbycusId</A> & id = IbycusId()) throw(IbycusNoId)</P>
+<P CLASS="methodindex">int Span(const int auth = 0, const int work = 0, const int sect = 0)</P>
+<P CLASS="methodindex">int tellg()</P>
+<P CLASS="methodindex">int CiteLevels(int auth=0, int work=0)</P>
+</DIV>
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Constructors</H2>
+
+<H3>IbycusIdtFile()</H3>
+<P>Default constructor. Constructs an empty <SPAN CLASS="classname">IbycusIdtFile</SPAN></P>
+
+<H3>IbycusIdtFile(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & vol)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">id</SPAN></TD>
+	<TD>The author ID of the file to be opened</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">vol</SPAN></TD>
+	<TD>The directory where the file exists</TD>
+</TR>
+</TABLE>
+
+<P>Creates an <SPAN CLASS="classname">IbycusIdtFile</SPAN>, given an author ID (e.g., <SPAN CLASS="literal">LAT0500</SPAN>, <SPAN CLASS="literal">TLG1010</SPAN>) and a directory. Note that <SPAN CLASS="variable">id</SPAN> is <I>not</I> the filename and must not have the <SPAN CLASS="filename">.IDT</SPAN> extension.</P>
+</DIV>
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Public Methods</H2>
+<H3>void Open(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> & vol)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">id</SPAN></TD>
+	<TD>The author ID of the file to be opened</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">vol</SPAN></TD>
+	<TD>The directory where the file exists</TD>
+</TR>
+</TABLE>
+
+<P>Opens a <SPAN CLASS="filename">.IDT</SPAN> file. Can be called after <SPAN CLASS="literal">IbycusIdtFile()</SPAN>, but it is better to use <SPAN CLASS="literal">IbycusIdtFile(id, vol)</SPAN> in the first place. Throws an <SPAN CLASS="classname"><A HREF="IbycusFileException.html">IbycusFileException</A></SPAN> if the file cannot be opened</P>
+
+<H3>int Count(const int auth = 0, const int work = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the number of works in the author <SPAN class="variable">auth</SPAN>, or the number of sections in the work <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>. See <SPAN CLASS="classname"><A HREF="IbycusTxtFile.html">IbycusTxtFile.Count()</A></SPAN>.
+
+<H3>const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(const int auth = 0, const int work = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the name of the author with the index <SPAN class="variable">auth</SPAN>, or of the work <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>.See <SPAN CLASS="classname"><A HREF="IbycusTxtFile.html">IbycusTxtFile.Name()</A></SPAN>.
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> & Id(const int auth = 0, const int work = -1, const int sect = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the ID of the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN>.</P>
+
+<PRE CLASS="code">
+IbycusIdtFile idt(&quot;LAT0960&quot;, &quot;D:\&quot;); // Your directory may be different
+cout &lt;&lt; idt.Id() &lt;&lt; &quot\n&quot;;
+cout &lt;&lt; idt.Id(0,0) &lt;&lt;  &quot\n&quot;;
+</PRE>
+
+<P>The output of this would be:</P>
+<PRE CLASS="output">
+0960
+0960.001
+</PRE>
+
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> & Start(const int auth = 0, const int work = 0, const int sect = 0)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: 0)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the start ID of the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN>.</P>
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> & End(const int auth = 0, const int work = -1, const int sect = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the end ID of the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN>.</P>
+
+<H3>ibylen_t Block(const int auth = 0, const int work = 0, const int sect = 0, const <A HREF="IbycusId.html">IbycusId</A> & id = IbycusId()) throw(IbycusNoId)</H3>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">id</SPAN></TD>
+	<TD>The ID to be found</TD>
+</TR>
+</TABLE>
+
+<P>Returns the block of the corresponding .TXT file that contains the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN> or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN> and the ID <SPAN class="variable">ID</SPAN>. Throws an <SPAN CLASS="classname"><A HREF="IbycusNoId.html">IbycusNoId</A></SPAN> if the ID is supplied but cannot be found.</P>
+
+<H3>int Span(const int auth = 0, const int work = 0, const int sect = 0)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: 0)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the number of blocks spanned by the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN></P>.
+
+<H3>int tellg()</H3>
+
+<P>Returns the current position of the file pointer in the .IDT file
+
+<H3>int CiteLevels(int auth=0, int work=0)</H3>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the number of citation levels required to describe the work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>.
+
+</DIV>
+
+<HR>
+<P>
+<A HREF="Libycus.html">Introduction</A> | 
+<A HREF="http://libycus.sourceforge.net">Libycus Homepage</A>
+</P>
+
+
+</BODY>
+</HTML>

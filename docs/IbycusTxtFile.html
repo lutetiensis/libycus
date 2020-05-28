@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<TITLE>Libycus -- IbycusTxtFile</TITLE>
+<META NAME="Author" CONTENT="Sean Redmond">
+<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</HEAD>
+
+<body BGCOLOR="#FFF5EE">
+<H1>IbycusTxtFile</H1>
+<HR>
+<H2>Description</H2>
+
+<P>The <SPAN CLASS="classname">IbycusTxtFile</SPAN> class provides an interface to PHI\TLG <SPAN CLASS="filename">.TXT</SPAN> files. Like an <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A></SPAN>, each file contains 1 (or possibly more) authors, with 1 or more works divided into 1 or more sections. Each of these may be accessed by index number, which are 0-based. The first section of the first work of the first author is therefore at index 0, 0, 0.</P>
+
+<P>The <SPAN CLASS="classname">IbycusTxtFile</SPAN> opens and maintains its own <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A></SPAN>, so it is unnecessary to create one separately. All of the public methods of the <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A></SPAN> are available through equivalent <SPAN CLASS="classname">IbycusTxtFile</SPAN> methods, and a pointer to the <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A></SPAN> can be retrieved via the method <SPAN CLASS="method">Idt()</SPAN>.</P>
+
+<HR>
+<DIV class="methodindex">
+<H2>Constructors</H2>
+<P CLASS="methodindex">IbycusTxtFile()</P>
+<P CLASS="methodindex">IbycusTxtFile(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; vol) throw(<A HREF="IbycusFileException.html">IbycusFileException</A>)</P>
+
+<H2>Public Methods</H2>
+<P CLASS="methodindex">bool Top(const int auth=0, const int work=0, const int sect=0) throw(<A HREF="IbycusException.html">IbycusException</A>)</P>
+<P CLASS="methodindex">bool Start(const int auth=0, const int work=0, const int sect=0) throw(<A HREF="IbycusException.html">IbycusException</A>)</P>
+<P CLASS="methodindex">void Goto(const <A HREF="IbycusId.html">IbycusId</A> &amp; target) throw(<A HREF="IbycusNoId.html">IbycusNoId</A>)</P>
+<P CLASS="methodindex">bool Next() throw(<A HREF="IbycusException.html">IbycusException</A>, <A HREF="IbycusParseException.html">IbycusParseException</A>)</P>
+<P CLASS="methodindex">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; <A HREF="#Text">Text()</A> const throw()</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> &amp; <A HREF="#Id">Id()</A> const throw()</P>
+<P CLASS="methodindex">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Filename() const throw()</P>
+<P CLASS="methodindex">int Count(const int auth = -1, const int work = -1)</P>
+<P CLASS="methodindex">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(const int auth = 0, const int work = -1)</P>
+<P CLASS="methodindex"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A> * Idt() throw()</P>
+<P CLASS="methodindex"><A HREF="IbycusDefs.html#ibystring">ibystring_t</A> StripCodes() const throw()</P>
+<P CLASS="methodindex">bool eos() const</P>
+<P CLASS="methodindex">bool eow() const</P>
+<P CLASS="methodindex">bool eoa() const</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> &amp; EndId(int auth=0, int work=-1, int section = -1)</P>
+<P CLASS="methodindex">const <A HREF="IbycusId.html">IbycusId</A> &amp; StartId(int auth=0, int work=-1, int section = -1)</P>
+</DIV>
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Constructors</H2>
+<H3>IbycusTxtFile()</H3>
+<P>Default constructor. Constructs an empty <SPAN CLASS="classname">IbycusTxtFile</SPAN></P>
+
+<H3>IbycusTxtFile(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; id, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; vol) throw(<A HREF="IbycusFileException.html">IbycusFileException</A>)</H3>
+
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">id</SPAN></TD>
+	<TD>The author ID of the file to be opened</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">vol</SPAN></TD>
+	<TD>The directory where the file exists</TD>
+</TR>
+</TABLE>
+
+<P>Creates an <SPAN CLASS="classname">IbycusTxtFile</SPAN>, given an author ID (e.g., <SPAN CLASS="literal">LAT0500</SPAN>, <SPAN CLASS="literal">TLG1010</SPAN>) and a directory. Note that <SPAN CLASS="variable">id</SPAN> is <I>not</I> the filename and must not have the <SPAN CLASS="filename">.TXT</SPAN> extension. Throws an <SPAN CLASS="classname"><A HREF="IbycusFileException.html">IbycusFileException</A></SPAN> if the file cannot be opened or read.</P>
+</DIV>
+
+<HR>
+
+<DIV class="methodindex">
+<H2>Public Methods</H2>
+<H3>bool Top(const int auth=0, const int work=0, const int sect=0) throw(<A HREF="IbycusException.html">IbycusException</A>)</H3>
+
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: 0)</TD>
+</TR>
+</TABLE>
+
+<P>Moves to the &quot;top&quot; of author, work and section indicated by the parameters. The &quot;top&quot; as the first line in the section <I>including titles</I> and other prefatory material. This is opposed to <SPAN CLASS="method">Start()</SPAN>, which moves to start of the section as defined by the <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html">IbycusIdtFile</A></SPAN>, which excludes titles.</P>
+
+<PRE CLASS="code">
+IbycusTxtFile txt(&quot;LAT0960&quot;, &quot;D:\&quot;); // Your directory may be different
+txt.Top() // Go to top of first section of first work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+
+txt.Top(0,1) // Go to top of first section of second work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+
+txt.Top(0,2,3) // Go to top of fourth section of third work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+</PRE>
+
+<P>The output of this would be:</P>
+<PRE CLASS="output">
+0960.001.t.1
+0960.002.2.t
+0960.003.3.t
+</PRE>
+
+<H3>bool Start(const int auth=0, const int work=0, const int sect=0) throw(<A HREF="IbycusException.html">IbycusException</A>)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: 0)</TD>
+</TR>
+</TABLE>
+
+<P>Moves to the &quot;start&quot; of author, work and section indicated by the parameters. The &quot;start&quot; is the line indicated by <SPAN CLASS="classname"><A HREF="IbycusIdtFile.html#StartId">IbycusIdtFile::StartId()</A></SPAN>, which is generally the first line of text after any titles and other prefatory material. This is opposed to <SPAN CLASS="method">Top()</SPAN>, which moves to the first line of the including titles.</P>
+
+<PRE CLASS="code">
+IbycusTxtFile txt(&quot;LAT0960&quot;, &quot;D:\&quot;); // Your directory may be different
+txt.Start() // Go to start of first section of first work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+
+txt.Start(0,1) // Go to start of first section of second work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+
+txt.Start(0,2,3) // Go to start of fourth section of third work
+cout &lt;&lt; txt.Id() &lt;&lt; txt.Text() &lt;&lt; &quot\n&quot;
+</PRE>
+
+<P>The output of this would be:</P>
+<PRE CLASS="output">
+0960.001.1.1
+0960.002.2.1
+0960.003.4.1
+</PRE>
+
+
+<H3>void Goto(const <A HREF="IbycusId.html">IbycusId</A> &amp; target) throw(<A HREF="IbycusNoId.html">IbycusNoId</A>)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The ID of the desired line</TD>
+</TR>
+</TABLE>
+
+<P>Moves to the line of the indicated ID. Throws an <SPAN CLASS="classname"><A HREF="IbycusFileException.html">IbycusNoId</A></SPAN> if the ID cannot be found.</P>
+
+<H3>bool Next() throw(<A HREF="IbycusException.html">IbycusException</A>, <A HREF="IbycusParseException.html">IbycusParseException</A>)</H3>
+
+<P>Gets the next line of the file and returns true if possible, false if the end-of-file has been reached. After calling <SPAN CLASS="method">Next()</SPAN> you can call <A HREF="#Id"><SPAN CLASS="method">Id()</SPAN></A> and <A HREF="#Text"><SPAN CLASS="method">Text()</SPAN></A> to get the data from the current line.</P>
+
+<A NAME="Text"></A>
+<H3>const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Text() const throw()</H3>
+<P>Returns the text of the current line.</P>
+
+<A NAME="Id"></A>
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; Id() const throw()</H3>
+<P>Returns the ID of the current line.</P>
+
+<H3>bool eos() const</H3>
+<P>Returns true if the end of the current section has been reached.</P>
+
+<H3>bool eow() const</H3>
+<P>Returns true if the end of the current work has been reached.</P>
+
+<H3>bool eoa() const</H3>
+<P>Returns true if the end of the current authorhas been reached.</P>
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; EndId(int auth=0, int work=-1, int section = -1)</H3>
+
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; StartId(int auth=0, int work=-1, int section = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<H3>int Count(const int auth = -1, const int work = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the number of works in the author <SPAN class="variable">auth</SPAN>, or the number of sections in the work <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>.</P>
+
+<PRE CLASS="code">
+IbycusTxtFile txt(&quot;LAT0960&quot;, &quot;D:\&quot;); // Your directory may be different
+int a = txt.Count();    // number of authors in the file
+int b = txt.Count(0);   // number of works by author 0
+int c = txt.Count(0,2); // number of sections in work 2 of author 0</PRE>
+
+
+
+<H3>const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(const int auth = 0, const int work = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the name of the author <SPAN class="variable">auth</SPAN>, or of the work <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>.
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; <A HREF="#Id">Id()</A> const throw()</H3>
+
+<P>Returns the id of the current line.</P>
+
+
+<H3><A HREF="IbycusIdtFile.html">IbycusIdtFile</A> * Idt() throw()</H3>
+
+<P>Returns a pointer to the object's <A HREF="IbycusIdtFile.html">IbycusIdtFile</A>.</P>
+
+<H3><A HREF="IbycusDefs.html#ibystring">ibystring_t</A> StripCodes() const throw()</H3>
+
+<P>Returns the same string as Text(), but with all Beta Code tags stripped out.</P>
+
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; EndId(int auth=0, int work=-1, int section = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the start ID of the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN>.</P>
+
+<H3>const <A HREF="IbycusId.html">IbycusId</A> &amp; StartId(int auth=0, int work=-1, int section = -1)</H3>
+<H4>Parameters</H4>
+<TABLE CELLSPACING=0 CELLPADDING=5>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">auth</SPAN></TD>
+	<TD>The index of the desired author (default: 0)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">work</SPAN></TD>
+	<TD>The index of the desired work (default: -1)</TD>
+</TR>
+<TR>
+	<TD CLASS="param"><SPAN CLASS="variable">sect</SPAN></TD>
+	<TD>The index of the desired section (default: -1)</TD>
+</TR>
+</TABLE>
+
+<P>Returns the end ID of the author with the index <SPAN class="variable">auth</SPAN>, work with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, or section with the index <SPAN class="variable">auth</SPAN>, <SPAN class="variable">work</SPAN>, <SPAN class="variable">sect</SPAN>.</P>
+
+
+</DIV>
+
+
+<HR>
+<P>
+<A HREF="Libycus.html">Introduction</A> | 
+<A HREF="http://libycus.sourceforge.net">Libycus Homepage</A>
+</P>
+
+<ADDRESS><A HREF="mailto:seanredmond@users.sourceforge.net">Sean Redmond</A></ADDRESS>
+
+</BODY>
+</HTML>

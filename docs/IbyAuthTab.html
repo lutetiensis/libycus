@@ -1,0 +1,263 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>Libycus -- IbyAuthTab</title>
+	<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</head>
+
+<body BACKGROUND="images/eosrp15.gif">
+
+<H1 CLASS="class">IbyAuthTab</H1>
+<HR>
+<H2>Name</H2>
+<H2>Synopsis</H2>
+<P><SPAN CLASS="code">IbyAuthTab</SPAN> is the interface to the <SPAN CLASS="filename">AUTHTAB.DIR</SPAN> file which lists the contents of each PHI/TLG disk. Each <SPAN CLASS="filename">AUTHTAB.DIR</SPAN> contains one or more &quot;corpora&quot;, each of which contains one or more authors, and has a &quot;tag&quot; and a name. For instance, the PHI disk contains three corpora:</P>
+
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2">
+
+<TR>
+	<TD><B>Tag</B></TD>
+	<TD><B>Name</B></TD>
+</TR>
+<TR>
+	<TD>LAT</TD>
+	<TD>Latin Texts</TD>
+</TR>
+<TR>
+	<TD>CIV</TD>
+	<TD>Miscellaneous Works</TD>
+</TR>
+<TR>
+	<TD>COP</TD>
+	<TD>Coptic Texts</TD>
+</TR>
+</TABLE>
+
+<P>Each author has an ID, a name, and may have &quot;aliases&quot; (e.g., Marcus Tullius Cicero, has the aliases &quot;Cicero&quot; and &quot;Tully&quot;, Publius Vergilius Maro the aliases &quot;Vergil&quot; and &quot;Virgil&quot;). The author's ID can be used to open up that author's <SPAN CLASS="filename">.IDT</SPAN> and <SPAN CLASS="filename">.TXT</SPAN> files.</P>
+
+<H2>Constructor Index</H2>
+	<H3 CLASS="method">CTlgAuthTab()</H3>
+	<H3 CLASS="method">CTlgAuthTab(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; dn, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; fn = &quot;AUTHTAB.DIR&quot;) throw(<A HREF="IbycusFileException.html">IbyFileException</A>, <A HREF="IbycusParseException.html">IbyParseException</A>)</H3>
+<H2>Method Index</H2>
+	<H3 CLASS="method">int Count() const</H3>
+	<H3 CLASS="method">int Count(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">int Count(int index) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">int Index(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag) const</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(int index) const</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Id(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Tag(int index) const</H3>
+	<H3 CLASS="method">int AliasCount(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Alias(int corpus, int author, int alias) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+
+<HR>
+
+<H2>Constructors</H2>
+	<H3 CLASS="method">CTlgAuthTab()</H3>
+	<P>Default Constructor.</P>
+
+	<H3 CLASS="method">CTlgAuthTab(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; dn, const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; fn = &quot;AUTHTAB.DIR&quot;) throw(<A HREF="IbycusFileException.html">IbyFileException</A>, <A HREF="IbycusParseException.html">IbyParseException</A>)</H3>
+	<DIV CLASS="method">
+	<P><B>Parameters</B></P>
+	<UL>
+		<LI><SPAN CLASS="code">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; dn</SPAN>: Directory in which to find <SPAN CLASS="filename">AUTHTAB.DIR</SPAN> 
+		<LI><SPAN CLASS="code">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; fn</SPAN>: Optional name of the file (if it is not <SPAN CLASS="filename">AUTHTAB.DIR</SPAN>).
+	</UL>
+
+	<P><B>Throws</B></P>
+	<UL>
+		<LI><A HREF="IbycusFileException.html">IbyFileException</A> if the file cannot be opened.
+		<LI><A HREF="IbycusParseException.html">IbyParseException</A> if the file cannot be parsed.
+	</UL>
+	
+	<P>Opens up the <SPAN CLASS="filename">AUTHTAB.DIR</SPAN> in directory <SPAN CLASS="variable">dn</SPAN>.</P>
+	</DIV>
+
+<HR>
+
+<H2>Methods</H2>
+	<H3 CLASS="method">int Count() const</H3>
+	<DIV CLASS="method">
+	<P><B>Returns</B></P>
+	<UL>
+		<LI>The number of corpora.
+	</UL>
+	</DIV>
+
+	<H3 CLASS="method">int Count(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<DIV CLASS="method">
+	<P><B>Parameters</B></P>
+	<UL>
+		<LI><SPAN CLASS="code">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag</SPAN>: the tag of a corpus
+	</UL>
+
+	<P><B>Returns</B></P>
+	<UL>
+		<LI>The number of authors on the corpus identified by the tag <SPAN CLASS="variable">tag</SPAN>.
+	</UL>
+
+	<P><B>Throws</B></P>
+	<UL>
+		<LI><A HREF="IbycusException.html">IbyException</A> if there is no corpus with the tag <SPAN CLASS="variable">tag</SPAN>.
+	</UL>
+	</DIV>
+
+	<H3 CLASS="method">int Count(int index) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<DIV CLASS="method">
+	<P><B>Parameters</B></P>
+	<UL>
+		<LI><SPAN CLASS="code">int index</SPAN>: the <B>0-based</B> index of a corpus
+	</UL>
+
+	<P><B>Returns</B></P>
+	<UL>
+		<LI>The number of authors on the corpus identified by the index <SPAN CLASS="variable">index</SPAN>.
+	</UL>
+
+	<P><B>Throws</B></P>
+	<UL>
+		<LI><A HREF="IbycusException.html">IbyException</A> if there is no corpus with the index <SPAN CLASS="variable">index</SPAN>.
+	</UL>
+	</DIV>
+
+	
+	<H3 CLASS="method">int Index(const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<DIV CLASS="method">
+	<P><B>Parameters</B></P>
+	<UL>
+		<LI><SPAN CLASS="code">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; tag</SPAN>: the tag of a corpus
+	</UL>
+
+	<P><B>Returns</B></P>
+	<UL>
+		<LI>The index of the corpus identified by the tag <SPAN CLASS="variable">tag</SPAN>.
+	</UL>
+
+	<P><B>Throws</B></P>
+	<UL>
+		<LI><A HREF="IbycusException.html">IbyException</A> if there is no corpus with the tag <SPAN CLASS="variable">tag</SPAN>.
+	</UL>
+	</DIV>
+
+	
+	
+	
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(int index) const</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Name(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Id(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Tag(int index) const</H3>
+	<H3 CLASS="method">int AliasCount(int corpus, int author) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+	<H3 CLASS="method">const <A HREF="IbycusDefs.html#ibystring">ibystring_t</A> &amp; Alias(int corpus, int author, int alias) const throw(<A HREF="IbycusException.html">IbyException</A>)</H3>
+
+
+
+
+<H2>Example</H2>
+
+<P>Given a directory and a string, this program searches the AUTHTAB.DIR file for the string in
+authors names and prints out the result</P>
+
+<PRE CLASS="code">
+
+/* 
+ * A Sample program to search the AUTHTAB.DIR for an
+ * author's name
+ *
+ * Copyright (c) 2000  Sean Redmond
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+#include &lt;iostream>
+#include &lt;algorithm>
+#include &lt;map>
+using namespace std;
+
+#include "TlgAuthTab.h"
+
+typedef map&lt;ibystring_t, ibystring_t, less&lt;ibystring_t> > HITMAP;
+
+int main(int argc, char *argv[])
+{
+   if (argc &lt;= 1)
+      return 1;
+
+   ibystring_t term, name;
+   ibystring_t dir = "c:\\musaios\\phi";
+   term = argv[1];
+   cout &lt;&lt; "Search author table for: " &lt;&lt; term &lt;&lt; "\n";
+   HITMAP hitlist;
+
+   CTlgAuthTab at = CTlgAuthTab(dir);
+	
+   cout &lt;&lt; "# of Corpora: " &lt;&lt; at.Count() &lt;&lt; "\n";
+	
+	
+   try {
+      cout &lt;&lt; "# of Authors in LAT: " &lt;&lt; at.Count("LAT") &lt;&lt; "\n";
+      cout &lt;&lt; "# of Authors in 0: " &lt;&lt; at.Count(0) &lt;&lt; "\n"; // same as LAT
+      cout &lt;&lt; "Name of corpus 1: " &lt;&lt; at.Name(1) &lt;&lt; "\n";
+      cout &lt;&lt; "Tag of corpus 2: " &lt;&lt; at.Tag(2) &lt;&lt; "\n";
+      cout &lt;&lt; "# of Authors in ABC: " &lt;&lt; at.Count("ABC") &lt;&lt; "\n"; // causes an exception
+   } catch(IbyException E) {
+      cout &lt;&lt; E.message &lt;&lt; "\n"; // handles the exception
+   }
+
+   int i, j, k;
+   for (i = 0; i &lt; at.Count(); i++) {                  // iterate through the corpora
+      for(j = 0; j &lt; at.Count(i); j++) {               // iterate through the authors
+         name = at.Name(i, j);
+         transform(name.begin(), name.end(), name.begin(), tolower);
+         if (name.find(term) != name.npos) {
+            hitlist[at.Name(i, j)] = at.Id(i, j);
+         } else {                                         // if no match...
+            for (k = 0; k &lt; at.AliasCount(i,j); k++) { // iterate through the aliases
+               name = at.Alias(i,j,k);
+               transform(name.begin(), name.end(), name.begin(), tolower);
+               if (name.find(term) != name.npos) {
+                  hitlist[at.Name(i, j)] = at.Id(i, j);
+               }
+            }
+         }
+      }
+   }
+
+   cout &lt;&lt; hitlist.size() &lt;&lt; " authors:\n";
+
+   HITMAP::iterator it;
+   for (it = hitlist.begin(); it != hitlist.end(); ++it)
+      cout &lt;&lt; (*it).second &lt;&lt; '\t' &lt;&lt; (*it).first &lt;&lt; '\n';
+   return 1;
+
+}
+</PRE>
+
+<PRE class="output">
+C:\>authsearch tull
+Search author table for: tull
+# of Corpora: 3
+# of Authors in LAT: 363
+# of Authors in 0: 363
+Name of corpus 1: Miscellaneous Works
+Tag of corpus 2: COP
+No corpus with the tag ABC
+5 authors:
+LAT0472 Catullus, Gaius Valerius
+LAT0474 Cicero, Marcus Tullius
+LAT0478 Cicero, Quintus Tullius
+LAT0540 Laurea, Tullius
+LAT0662 Tiro, Marcus Tullius
+</PRE>
+</body>
+</html>

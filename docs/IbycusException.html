@@ -1,0 +1,29 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+<head>
+	<title>Libycus -- IbycusFileException</title>
+	<LINK REL="STYLESHEET" TYPE="text/css" HREF="styles/libycus.css">
+</head>
+
+<body BGCOLOR="#FFF5EE">
+
+<H1 CLASS="class">IbycusException</H1>
+<HR>
+<H2>Description</H2>
+<P>All exceptions thrown by Libycus classes are of the class <SPAN CLASS="code">IbycusException</SPAN> and its subclasses <SPAN CLASS="code">IbycusFileException</SPAN>, <SPAN CLASS="code">IbycusNoId</SPAN> and <SPAN CLASS="code">IbycusParseException</SPAN>. <SPAN CLASS="code">IbycusException</SPAN> inherits from <SPAN CLASS="code">std::runtime_error</SPAN> and provides two public variables:</P>
+
+<UL>
+	<LI><SPAN CLASS="code">int offset</SPAN>: contains the offset of the file pointer when the error occured (if applicable).
+	<LI><SPAN CLASS="code">ibystring_t type</SPAN>: contains the type of error that has been thrown (currently &quot;general&quot; for <SPAN CLASS="code">IbycusException</SPAN>, &quot;file&quot; for <SPAN CLASS="code">IbycusFileException</SPAN>, &quot;no id&quot; for <SPAN CLASS="code">IbycusNoId</SPAN>, and &quot;parse&quot; for <SPAN CLASS="code">IbycusParseException</SPAN>. This is provided so that subclasses of <SPAN CLASS="code">IbycusException</SPAN> can be caught as or upcast to <SPAN CLASS="code">IbycusException</SPAN>s without losing any indication of their original class or requiring any run-time type information.
+
+<HR>
+<P>
+<A HREF="Libycus.html">Introduction</A> | 
+<A HREF="http://libycus.sourceforge.net">Libycus Homepage</A>
+</P>
+
+<ADDRESS><A HREF="mailto:seanredmond@users.sourceforge.net">Sean Redmond</A></ADDRESS>
+
+</BODY>
+</HTML>
