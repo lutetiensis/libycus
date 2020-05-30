@@ -69,8 +69,8 @@ public:
 	bool eos() const;
 	bool eow() const;
 	bool eoa() const;
-	const IbycusId & IbycusTxtFile::EndId(int auth=0, int work=-1, int section = -1);
-	const IbycusId & IbycusTxtFile::StartId(int auth=0, int work=-1, int section = -1);
+	const IbycusId & EndId(int auth=0, int work=-1, int section = -1);
+	const IbycusId & StartId(int auth=0, int work=-1, int section = -1);
 
 private:
 	void get_first_line() throw(IbycusException, IbycusParseException);

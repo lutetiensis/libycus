@@ -34,7 +34,7 @@ class IbycusParseException : public IbycusException
 public:
 	IbycusParseException(ibystring_t msg="", int off=0) : IbycusException(msg, off)
 		{type = "parse";};
-	virtual ~IbycusParseException() {};
+	virtual ~IbycusParseException() _NOEXCEPT {};
 	int offset;
 	ibystring_t type;
 

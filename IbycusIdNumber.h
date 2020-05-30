@@ -173,7 +173,7 @@ bool ibyIdNumber::operator<(const ibyIdNumber & rhs) const
 		return true;
 	}
 
-	return binary < rhs.binary | 
+	return (binary < rhs.binary) |
 			(binary == rhs.binary && ascii < rhs.ascii);
 }
 

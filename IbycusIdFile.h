@@ -28,7 +28,6 @@
 
 #include "IbycusFile.h"
 #include "IbycusId.h"
-#include "IbycusTxtLine.h"
 
 __IBYCUS_BEGIN_NAMESPACE
 class ibyIdFile : public ibyFile  

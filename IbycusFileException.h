@@ -33,7 +33,7 @@ class IbycusFileException : public IbycusException
 {
 public:
 	IbycusFileException(ibystring_t msg = "", int off=0) : IbycusException(msg, off) {type="file";};
-	virtual ~IbycusFileException() {};
+	virtual ~IbycusFileException() _NOEXCEPT {};
 
 };
 

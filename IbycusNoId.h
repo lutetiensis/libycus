@@ -35,7 +35,7 @@ class IbycusNoId : public IbycusException
 public:
 	IbycusNoId(ibystring_t msg="", int off=0) : IbycusException(msg, off)
 		{type = "no id";};
-	virtual ~IbycusNoId() {};
+	virtual ~IbycusNoId() _NOEXCEPT {};
 	int offset;
 	ibystring_t type;
 

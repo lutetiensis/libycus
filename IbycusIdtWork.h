@@ -80,13 +80,14 @@ ibyIdFile & operator>>(ibyIdFile & s, ibyIdtWork & rhs) {
 	ibyFile::pos_type sp = s.tellg();
 
 	s >> c;
-	if (c != s.idt_new_work)
+	if (c != s.idt_new_work) {
 		if (c == s.idt_eof) {
 			s.setstate(s.eofbit);
 			return s;
 		} else {
 			throw IbycusParseException("No new work in IDT file", s.tellg());
 		}
+	}
 
 	s >> rhs._length >> rhs._block;
 	rhs._start_pos = s.tellg();

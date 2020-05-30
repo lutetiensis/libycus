@@ -28,6 +28,7 @@
 
 #include <cassert>
 #include <algorithm>
+#include <iostream>
 #include "IbycusCit.h"
 #include "IbycusFile.h"
 #include "IbycusIdNumber.h"
@@ -382,7 +383,7 @@ void IbycusId::Clear()
 
 bool IbycusId::SameAs(const IbycusId & rhs, const comp_level & cl) const
 {
-	cout << "SameAs: " << ToString() << " : " << rhs << "\n";
+	std::cout << "SameAs: " << ToString() << " : " << rhs << "\n";
 	IDMAP::key_type k;
 	if (cl == cl_auth)
 		k ='a';

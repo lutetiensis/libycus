@@ -63,7 +63,7 @@ ibyIdtSection::ibyIdtSection(ibyIdFile & idt)
 {
 	ibychar_t c;
 	idt >> c;
-	if (c != idt.idt_new_sect) {
+	if (c != ibyIdFile::idt_new_sect) {
 		char tmp[100];
 		sprintf(tmp, "No new section in IDT file at %X (%X)", (unsigned int)idt.tellg(), c);
 		throw IbycusParseException(tmp);
@@ -74,33 +74,33 @@ ibyIdtSection::ibyIdtSection(ibyIdFile & idt)
 	while (keepon) {
 		c = idt.get();
 		switch(c) {
-		case idt.idt_new_work :
+		case ibyIdFile::idt_new_work :
 			idt.putback(c);
 			keepon = false;
 			break;
-		case idt.idt_new_sect :
+		case ibyIdFile::idt_new_sect :
 			idt.putback(c);
 			keepon = false;
 			break;
-		case idt.idt_sect_start:
+		case ibyIdFile::idt_sect_start:
 			idt >> StartId_;
 			break;
-		case idt.idt_sect_end:
+		case ibyIdFile::idt_sect_end:
 			idt >> EndId_;
 			break;
-		case idt.idt_last_id:
+		case ibyIdFile::idt_last_id:
 			LastIds_.push_back(IbycusId(idt, idt.last_id));
 			break;
-		case idt.idt_exc_start:
+		case ibyIdFile::idt_exc_start:
 			Exceptions_.push_back(ibyIdException(idt));
 			break;
-		case idt.idt_exc_end:
+		case ibyIdFile::idt_exc_end:
 			(Exceptions_.back()).SetEnd(idt);
 			break;
-		case idt.idt_exc_sing:
+		case ibyIdFile::idt_exc_sing:
 			Exceptions_.push_back(ibyIdException(idt));
 			break;
-		case idt.idt_eof:			// Handles error in format
+		case ibyIdFile::idt_eof:		// Handles error in format
 			idt.putback(c);
 			keepon = false;
 			break;

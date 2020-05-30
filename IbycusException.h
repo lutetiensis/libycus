@@ -36,7 +36,7 @@ public:
 	ibystring_t type;
 	IbycusException(ibystring_t msg = "", int off=0)
 		: runtime_error(msg), offset(off), type("general") {};
-	virtual ~IbycusException() {};
+	virtual ~IbycusException() _NOEXCEPT {};
 
 };
 

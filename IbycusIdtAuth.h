@@ -80,13 +80,14 @@ ibyIdFile & operator>>(ibyIdFile & s, ibyIdtAuth & rhs) throw(IbycusParseExcepti
 	ibyFile::pos_type start_pos = s.tellg();
 
 	s >> c;
-	if (c != s.idt_new_auth)
+	if (c != s.idt_new_auth) {
 		if (c == s.idt_eof) {
 			s.setstate(s.eofbit);
 			return s;
 		} else {
 			throw IbycusParseException("No new author in IDT file", s.tellg());
 		}
+	}
 
 	s >> rhs.length >> rhs.block;
 	rhs.start_pos = s.tellg();
